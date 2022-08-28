@@ -1,11 +1,24 @@
 const kokac = new KokacP5Ext();
+
+// let cnt = 0;
+let myFont;
+function preload() {
+  myFont = loadFont("fonts/NotoSansKR-Bold.otf");
+}
 async function setup() {
   // 로직은 setup 안에서만 손 대면 되도록 코드를 구성함
-  const sizeWidth = document
-    .querySelector("#stg")
-    .getBoundingClientRect().width;
-  const sizeHeight = sizeWidth * 0.3;
+  let sizeWidth = document.querySelector("#stg").getBoundingClientRect().width;
+  let sizeHeight = sizeWidth * 0.3;
+  sizeWidth = innerWidth;
+  sizeHeight = innerHeight;
   createCanvas(sizeWidth, sizeHeight);
+  noStroke();
+  kokac.add((e) => background(0));
+  let y = 0;
+  kokac.add((e) => {
+    kokac.text(`abc\ndef\n한글`, 10, y, 30, myFont);
+  });
+  return;
   kokac.add((e) => background(0));
   let rd = sizeWidth / 20;
   let round = sizeWidth / 1000;

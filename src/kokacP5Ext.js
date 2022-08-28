@@ -35,6 +35,26 @@ class KokacP5Ext {
       value.redraw && value.redraw();
     }
   }
+  text(string, xx, yy, size, font) {
+    let myFont = font;
+    let text1 = string;
+    let fontSizeSmall = size;
+    let x = xx;
+    let y = yy;
+    let bounding_box = myFont.textBounds(text1, x, y, fontSizeSmall);
+    x -= bounding_box.x;
+    y -= bounding_box.y;
+    let rectinfo = [
+      x + bounding_box.x,
+      y + bounding_box.y,
+      bounding_box.w,
+      bounding_box.h,
+    ];
+    rect(...rectinfo);
+    textFont(myFont);
+    textSize(fontSizeSmall);
+    text(text1, x + xx, y + yy);
+  }
 }
 function draw() {
   kokac.step();
