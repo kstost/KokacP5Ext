@@ -1,6 +1,5 @@
 const kokac = new KokacP5Ext();
 
-// let cnt = 0;
 let myFont;
 function preload() {
   myFont = loadFont("fonts/NotoSansKR-Bold.otf");
@@ -14,55 +13,71 @@ async function setup() {
   createCanvas(sizeWidth, sizeHeight);
   noStroke();
   kokac.add((e) => background(0));
-  let y = 0;
   kokac.add((e) => {
     fill("#00dd00");
-    let bound = kokac.text(`abc\ndef\n한글`, 10, y, 230, myFont);
-    fill("#00dd0033");
-    rect(bound.x, bound.y, bound.w, bound.h);
+    kokac.text(`abc\ndef\n한글`, 10, 0, 230, myFont);
   });
-  return;
-  kokac.add((e) => background(0));
-  let rd = sizeWidth / 20;
-  let round = sizeWidth / 1000;
-  let lst = [];
-  for (let i = 0; i < (sizeWidth - rd) / rd; i++) {
-    for (let ia = 0; ia < (sizeHeight - rd) / rd; ia++) {
-      let cc = {
-        radian: i * 0.1 * ia,
-        x: rd * 1 + i * rd,
-        y: rd * 1 + ia * rd,
-        r: round,
-        rr: rd,
-      };
-      cc.update = function () {
-        this.radian += 0.1;
-      };
-      cc.redraw = function () {
-        let x = this.x + Math.cos(this.radian) * this.r;
-        let y = this.y + Math.sin(this.radian) * this.r;
-        this.cx = x;
-        this.cy = y;
-      };
-      kokac.add(cc);
-      lst.push(cc);
+  //-----------------------------------------
+  class Mother {
+    constructor() {
+      this.x = 0;
+      this.y = 0;
+      this.r = 20;
+      this.alpha = 0;
+      this.alphaToggle = false;
+    }
+    update() {
+      this.x += 0.1;
+      if (!this.alphaToggle) {
+        this.alpha++;
+        if (this.alpha >= 255) this.alphaToggle = !this.alphaToggle;
+      } else {
+        this.alpha--;
+        if (this.alpha <= 0) this.alphaToggle = !this.alphaToggle;
+      }
+    }
+    redraw() {
+      fill(255, 0, 0, this.alpha);
+      circle(this.x, this.y, this.r * 2);
     }
   }
-  lst.forEach((cc, i) => {
-    let ln = { radian: i * 0.02 };
-    ln.update = function () {
-      this.x1 = cc.cx;
-      this.y1 = cc.cy;
-      this.radian += 0.01;
+  for (let i = 0; i < 10; i++) {
+    let c2 = new Mother();
+    c2.x = c2.r;
+    c2.y = c2.r + i * c2.r * 2;
+    kokac.add(c2);
+    let c3 = { r: 10 };
+    c3.redraw = function () {
+      fill(255, 255, 0);
+      circle(c2.x, c2.y, this.r * 2);
     };
-    ln.redraw = function () {
-      strokeWeight(rd / 1.2);
-      stroke(130);
-      let length = rd / 2;
-      let ex = this.x1 + length * Math.cos(this.radian);
-      let ey = this.y1 + length * Math.sin(this.radian);
-      line(this.x1, this.y1, ex, ey);
-    };
-    kokac.add(ln);
-  });
+    kokac.add(c3);
+
+    kokac.add(() => {
+      let bound = kokac.textBounds(
+        `${Math.random()}`,
+        c2.x,
+        c2.y,
+        20,
+        myFont,
+        true
+      );
+      let margin = 4;
+      push();
+      stroke(255);
+      fill(30);
+      rect(
+        c2.r + margin + bound.rect.x - margin,
+        bound.rect.y - margin - bound.rect.h * 0.5,
+        bound.rect.w + margin * 2,
+        bound.rect.h + margin * 2
+      );
+      pop();
+      let { string, x, y, font, size } = bound;
+      fill(255);
+      textFont(font);
+      textSize(size);
+      text(string, c2.r + margin + x, y - bound.rect.h * 0.5);
+    });
+  }
 }

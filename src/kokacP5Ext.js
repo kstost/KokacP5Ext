@@ -35,7 +35,13 @@ class KokacP5Ext {
       value.redraw && value.redraw();
     }
   }
-  text(string, xx, yy, size, font, nocalcbound) {
+  text(string, xx, yy, size, font) {
+    let info = this.textBounds(string, xx, yy, size, font);
+    textFont(info.font);
+    textSize(info.size);
+    text(info.string, info.x, info.y);
+  }
+  textBounds(string, xx, yy, size, font) {
     let myFont = font;
     let text1 = string;
     let fontSizeSmall = size;
@@ -44,19 +50,19 @@ class KokacP5Ext {
     let bounding_box = myFont.textBounds(text1, x, y, fontSizeSmall);
     x -= bounding_box.x;
     y -= bounding_box.y;
-    let rectinfo;
-    if (!nocalcbound) {
-      rectinfo = {
+    return {
+      x: x + xx,
+      y: y + yy,
+      size: fontSizeSmall,
+      font: myFont,
+      string: string,
+      rect: {
         x: x + bounding_box.x,
         y: y + bounding_box.y,
         w: bounding_box.w,
         h: bounding_box.h,
-      };
-    }
-    textFont(myFont);
-    textSize(fontSizeSmall);
-    text(text1, x + xx, y + yy);
-    return rectinfo;
+      },
+    };
   }
 }
 function draw() {
