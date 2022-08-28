@@ -16,7 +16,10 @@ async function setup() {
   kokac.add((e) => background(0));
   let y = 0;
   kokac.add((e) => {
-    kokac.text(`abc\ndef\n한글`, 10, y, 30, myFont);
+    fill("#00dd00");
+    let bound = kokac.text(`abc\ndef\n한글`, 10, y, 230, myFont);
+    fill("#00dd0033");
+    rect(bound.x, bound.y, bound.w, bound.h);
   });
   return;
   kokac.add((e) => background(0));
